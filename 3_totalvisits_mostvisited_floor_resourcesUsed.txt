@@ -1,0 +1,35 @@
+script:
+create table entries ( 
+name varchar(20),
+address varchar(20),
+email varchar(20),
+floor int,
+resources varchar(10));
+
+insert into entries 
+values ('A','Bangalore','A@gmail.com',1,'CPU'),('A','Bangalore','A1@gmail.com',1,'CPU'),('A','Bangalore','A2@gmail.com',2,'DESKTOP')
+,('B','Bangalore','B@gmail.com',2,'DESKTOP'),('B','Bangalore','B1@gmail.com',2,'DESKTOP'),('B','Bangalore','B2@gmail.com',1,'MONITOR')
+
+solution:
+
+with floor_visits as(select name, floor, 
+count(1) as floor_visit,
+rank() over(partition by [name] order by count(1) desc) as rn 
+from entries
+group by name,floor),
+total_visits as(
+select name, count(1) as total_visits from entries
+group by name
+),
+distinct_resources as(
+select distinct name, resources from entries
+)
+,aggrigated_resources as(
+select name , string_agg(resources,',') as used_resources from distinct_resources
+group by name
+)
+
+select tv.name, tv.total_visits as total_vists,fv.floor as most_visited_floor, ar.used_resources
+from total_visits tv
+inner join floor_visits fv on fv.name=tv.name and fv.rn=1
+inner join aggrigated_resources ar on ar.name= tv.name

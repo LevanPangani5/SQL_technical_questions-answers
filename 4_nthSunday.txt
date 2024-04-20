@@ -1,0 +1,24 @@
+find nth sunday from the given date
+
+declare @date date
+declare @n int
+declare @weekday int
+declare @makeSunday int
+set @date= '2022-01-02'
+set @n=3
+
+set @weekday= datepart(weekday,@date)
+if(@weekday !=1)
+begin
+set @makeSunday=8-@weekday
+end
+else
+begin
+set @makeSunday=0;
+end
+set @date=dateadd(day,@makeSunday,@date)
+set @date= dateadd(week,@n,@date)
+print @date
+print datepart(weekday,@date)
+
+
