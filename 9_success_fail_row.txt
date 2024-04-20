@@ -8,3 +8,29 @@ state varchar(10)
 
 insert into tasks  values ('2019-01-01','success'),('2019-01-02','success'),('2019-01-03','success'),('2019-01-04','fail')
 ,('2019-01-05','fail'),('2019-01-06','success')
+
+not finished solution:
+
+create table #formattedStatus(
+diapazon nvarchar(100),
+status nvarchar(30)
+)
+
+
+declare taskCursor cursor for
+select * from tasks
+
+open taskCursor
+
+fetch next from taskCursor into @date_values,@currentState
+
+while(@@fetch_status=  0)
+begin 
+     fetch next from taskCursor into @date_value, @state
+	 if(@current_state != @state)
+	 begin
+	   set @date_values= concat(@date_values,concat('-',@date_value))
+	   insert into #formattedStatus
+	   values(@date_values, @current_state)
+	 end
+end
